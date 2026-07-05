@@ -3,7 +3,8 @@ import UIKit
 
 struct EeveeSettingsView: View {
     let navigationController: UINavigationController
-    static let spotifyAccentColor = Color(hex: "#1ed760")
+    // ★テーマカラーを「Spotifyの緑」から「あなたオリジナルのネオンパープル」に書き換え！
+    static let spotifyAccentColor = Color(hex: "#A020F0") 
     
     @State private var hasShownCommonIssuesTip = UserDefaults.hasShownCommonIssuesTip
     @State private var isClearingData = false
@@ -20,11 +21,16 @@ struct EeveeSettingsView: View {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         UIView.appearance().tintColor = UIColor(EeveeSettingsView.spotifyAccentColor)
+        
+        // ★UI全体の見た目を完全に漆黒のダークテーマに固定する設定
+        UITableView.appearance().backgroundColor = UIColor.black
+        UITableViewCell.appearance().backgroundColor = UIColor(white: 0.05, alpha: 1.0)
     }
 
     var body: some View {
         List {
             EeveeSettingsVersionView()
+                .listRowBackground(Color.black)
             
             if !hasShownCommonIssuesTip {
                 CommonIssuesTipView(
@@ -33,10 +39,10 @@ struct EeveeSettingsView: View {
                         UserDefaults.hasShownCommonIssuesTip = true
                     }
                 )
+                .listRowBackground(Color(white: 0.05))
             }
             
-            //
-            
+            // ★パッチ設定のボタンをネオンピンク（#FF007F）に変更
             Button {
                 pushSettingsController(
                     with: EeveePatchingSettingsView(),
@@ -44,12 +50,14 @@ struct EeveeSettingsView: View {
                 )
             } label: {
                 NavigationSectionView(
-                    color: .orange,
+                    color: Color(hex: "#FF007F"),
                     title: "patching".localized,
-                    imageSystemName: "hammer.fill"
+                    imageSystemName: "bolt.heart.fill" // アイコンも可愛い稲妻ハートに
                 )
             }
+            .listRowBackground(Color(white: 0.05))
             
+            // ★歌詞設定のボタンをディープパープル（.purple）に変更
             Button {
                 pushSettingsController(
                     with: EeveeLyricsSettingsView(),
@@ -57,12 +65,14 @@ struct EeveeSettingsView: View {
                 )
             } label: {
                 NavigationSectionView(
-                    color: .blue,
+                    color: .purple,
                     title: "lyrics".localized,
-                    imageSystemName: "quote.bubble.fill"
+                    imageSystemName: "music.note.list" // アイコンを音符リストに
                 )
             }
+            .listRowBackground(Color(white: 0.05))
             
+            // ★カスタム設定のボタンをゴールド（.yellow）に変更
             Button {
                 pushSettingsController(
                     with: EeveeUISettingsView(),
@@ -70,12 +80,14 @@ struct EeveeSettingsView: View {
                 )
             } label: {
                 NavigationSectionView(
-                    color: Color(hex: "#64D2FF"),
+                    color: .yellow,
                     title: "customization".localized,
-                    imageSystemName: "paintpalette.fill"
+                    imageSystemName: "wand.and.stars" // アイコンを魔法の杖に
                 )
             }
+            .listRowBackground(Color(white: 0.05))
             
+            // ★実験機能のボタンをミントグリーン（#00FA9A）に変更
             Button {
                 pushSettingsController(
                     with: EeveeExperimentsSettingsView(),
@@ -83,15 +95,15 @@ struct EeveeSettingsView: View {
                 )
             } label: {
                 NavigationSectionView(
-                    color: .purple,
+                    color: Color(hex: "#00FA9A"),
                     title: "experiments".localized,
-                    imageSystemName: "sparkle"
+                    imageSystemName: "flame.fill" // アイコンを炎に
                 )
             }
+            .listRowBackground(Color(white: 0.05))
             
-            //
-            
-            Section(footer: Text("reset_data_description".localized)) {
+            // データ削除セクション
+            Section(footer: Text("reset_data_description".localized).foregroundColor(.gray)) {
                 Button {
                     isClearingData = true
                     
@@ -108,11 +120,15 @@ struct EeveeSettingsView: View {
                     }
                     else {
                         Text("reset_data".localized)
+                            .foregroundColor(.red) // 警告色は赤に強調
                     }
                 }
             }
+            .listRowBackground(Color(white: 0.05))
         }
         .listStyle(GroupedListStyle())
+        .background(Color.black) // 背景を真っ黒に
+        .scrollContentBackground(.hidden) // 背景透過
         
         .animation(.default, value: isClearingData)
         .animation(.default, value: hasShownCommonIssuesTip)
